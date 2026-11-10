@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "flakehound"
 version = "0.1.0"
-description = "Static flaky test detector, AST test smell analyzer, and isolation toolkit for pytest suites."
+description = "Static analysis of potential flaky-test patterns in Python test suites."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
@@ -14,11 +14,8 @@ authors = [
 ]
 keywords = ["pytest", "testing", "flaky-tests", "static-analysis", "ast", "linter"]
 
-[project.urls]
-Repository = "https://github.com/Dharmogata/flakehound"
-Issues = "https://github.com/Dharmogata/flakehound/issues"
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -30,9 +27,15 @@ classifiers = [
 ]
 dependencies = []
 
+[project.urls]
+Repository = "https://github.com/Dharmogata/flakehound"
+Issues = "https://github.com/Dharmogata/flakehound/issues"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
+    "coverage>=7",
+    "ruff>=0.9",
 ]
 
 [project.scripts]
@@ -44,3 +47,14 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+
+[tool.coverage.run]
+source = ["flakehound"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from enum import Enum
-from pathlib import Path
 from typing import Any, Dict, List
 
 
@@ -49,6 +48,14 @@ class Diagnostic:
         return data
 
 
+@dataclass(frozen=True)
+class ScanError:
+    """A file or target that could not be analyzed."""
+
+    file_path: str
+    message: str
+
+
 @dataclass
 class ScanReport:
     """Aggregated results of scanning a target path."""
@@ -57,6 +64,7 @@ class ScanReport:
     files_scanned: int = 0
     tests_inspected: int = 0
     diagnostics: List[Diagnostic] = field(default_factory=list)
+    errors: List[ScanError] = field(default_factory=list)
 
     @property
     def total_issues(self) -> int:
@@ -80,6 +88,8 @@ class ScanReport:
             "files_scanned": self.files_scanned,
             "tests_inspected": self.tests_inspected,
             "total_issues": self.total_issues,
+            "complete": not self.errors,
+            "errors": [asdict(error) for error in self.errors],
             "severity_counts": self.count_by_severity(),
             "rule_counts": self.count_by_rule(),
             "diagnostics": [d.to_dict() for d in self.diagnostics],
